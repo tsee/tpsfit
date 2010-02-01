@@ -4,8 +4,8 @@ LD=g++
 CXXFLAGS=-O2
 LDFLAGS=-lglut -lGL -lGLU
 
-SOURCES=main.cc
-OBJECTS=$(SOURCES:.cpp=.o)
+SOURCES=main.cc ThinPlateSpline.cc
+OBJECTS=$(SOURCES:.cc=.o)
 EXECUTABLE=tpsdemo
 
 all: $(EXECUTABLE)
