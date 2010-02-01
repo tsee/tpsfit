@@ -3,6 +3,7 @@
 
 #include <boost/numeric/ublas/matrix.hpp>
 #include <vector>
+#include <exception>
 #include "linalg3d.h"
 
 namespace TPS {
@@ -10,7 +11,7 @@ namespace TPS {
   public:
     ThinPlateSpline(const std::vector<Vec>& controlPoints, const double regularization = 0.);
     ThinPlateSpline(); // for stl containers
-    ~ThinPlateSpline();
+    ~ThinPlateSpline() {};
 
     double Evaluate(const double x, const double z) const;
 
@@ -29,6 +30,18 @@ namespace TPS {
     boost::numeric::ublas::matrix<double> fMtx_orig_k;
   };
 
+
+  class NotEnoughControlPointsException : public std::exception
+  {
+  public:
+    NotEnoughControlPointsException()
+    {}
+
+    virtual const char* what() const throw()
+    {
+      return "Not enough control points for evaluating ThinPlateSpline";
+    }
+  };
 
 } // end namespace TPS
 

@@ -62,6 +62,8 @@ ThinPlateSpline::ThinPlateSpline(const std::vector<Vec>& controlPoints, const do
 void ThinPlateSpline::InitializeMatrix()
 {
   const unsigned int p = fControlPoints.size();
+  if (p < 3)
+    throw NotEnoughControlPointsException();
 
   // Allocate the matrix
   fMtx_l = matrix<double>(p+3, p+3);
