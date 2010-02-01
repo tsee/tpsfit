@@ -1,10 +1,10 @@
 
 CXX=g++
 LD=g++
-CXXFLAGS=-O2
+CXXFLAGS=-O2 -I. -Wall
 LDFLAGS=-lglut -lGL -lGLU
 
-SOURCES=main.cc ThinPlateSpline.cc
+SOURCES=linalg3d.cc main.cc ThinPlateSpline.cc
 OBJECTS=$(SOURCES:.cc=.o)
 EXECUTABLE=tpsdemo
 
