@@ -33,7 +33,18 @@ namespace TPS {
   };
 
 
-  class NotEnoughControlPointsException : public std::exception
+  class TPSException : public std::exception
+  {
+  public:
+    TPSException() {}
+
+    virtual const char* what() const throw() {
+      return "Generic ThinPlateSpline exception. Nuke your programmer.";
+    }
+  };
+
+
+  class NotEnoughControlPointsException : public TPSException
   {
   public:
     NotEnoughControlPointsException() {}
@@ -43,7 +54,8 @@ namespace TPS {
     }
   };
 
-  class SingularMatrixException : public std::exception
+
+  class SingularMatrixException : public TPSException
   {
   public:
     SingularMatrixException() {}
