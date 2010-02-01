@@ -40,6 +40,8 @@
 #include <cstring>
 
 using namespace boost::numeric::ublas;
+using namespace TPS;
+
 
 // ========= BEGIN INTERESTING STUFF  =========
 
