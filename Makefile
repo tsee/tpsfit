@@ -4,7 +4,7 @@ LD=g++
 CXXFLAGS=-O2
 LDFLAGS=-lglut -lGL -lGLU
 
-SOURCES=main.cpp
+SOURCES=main.cc
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=tpsdemo
 
@@ -13,7 +13,7 @@ all: $(EXECUTABLE)
 $(EXECUTABLE): $(OBJECTS) 
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
-.cpp.o:
+.cc.o:
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
