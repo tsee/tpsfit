@@ -22,6 +22,10 @@
  *    - implement TPS approximation 3 as suggested in paper
  *      Gianluca Donato and Serge Belongie, 2002: "Approximation
  *      Methods for Thin Plate Spline Mappings and Principal Warps"
+ *
+ *  Slight compatibility changes
+ *    Copyright (C) 2010 by Steffen Mueller smueller -at- cpan -dot- org
+ *
  */
 
 #include <GL/glut.h>
@@ -32,6 +36,8 @@
 
 #include <vector>
 #include <cmath>
+#include <cstdlib>
+#include <cstring>
 
 using namespace boost::numeric::ublas;
 
