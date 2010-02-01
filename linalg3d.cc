@@ -28,11 +28,7 @@
 
 using namespace TPS;
 
-float Vec::norm() const { return x*x + y*y + z*z; }
-
-float Vec::len() const { return (float)sqrt(norm()); }
-
-bool Vec::operator== ( const Vec& b) const { return ((*this)-b).norm() < EPSILON; }
+bool TPS::Vec::operator== ( const Vec& b) const { return ((*this)-b).norm() < EPSILON; }
 
 // Left hand float multplication
 inline Vec TPS::operator* ( const float src, const Vec& v ) { Vec tmp(v); return (tmp *= src); }
@@ -68,7 +64,7 @@ Mtx Mtx::transpose() const
 }
 
 // Creates a scale matrix
-Mtx scale(const Vec& scale)
+Mtx TPS::scale(const Vec& scale)
 {
   Mtx m;
   m.data[0+0] = scale.x;
@@ -78,7 +74,7 @@ Mtx scale(const Vec& scale)
 }
 
 // Creates a translation matrix
-Mtx translate(const Vec& moveAmt)
+Mtx TPS::translate(const Vec& moveAmt)
 {
   Mtx m;
   m.data[0+3] = moveAmt.x;
@@ -88,7 +84,7 @@ Mtx translate(const Vec& moveAmt)
 }
 
 // Creates an euler rotation matrix (by X-axis)
-Mtx rotateX(float ang)
+Mtx TPS::rotateX(float ang)
 {
   float s = (float) sin(Deg2Rad(ang));
   float c = (float) cos(Deg2Rad(ang));
@@ -100,7 +96,7 @@ Mtx rotateX(float ang)
 }
 
 // Creates an euler rotation matrix (by Y-axis)
-Mtx rotateY(float ang)
+Mtx TPS::rotateY(float ang)
 {
   float s = (float) sin( Deg2Rad( ang ) );
   float c = (float) cos( Deg2Rad( ang ) );
@@ -112,7 +108,7 @@ Mtx rotateY(float ang)
 }
 
 // Creates an euler rotation matrix (by Z-axis)
-Mtx rotateZ(float ang)
+Mtx TPS::rotateZ(float ang)
 {
   float s = (float) sin( Deg2Rad( ang ) );
   float c = (float) cos( Deg2Rad( ang ) );
@@ -124,7 +120,7 @@ Mtx rotateZ(float ang)
 }
 
 // Creates an euler rotation matrix (pitch/head/roll (x/y/z))
-Mtx rotate(float pitch, float head, float roll)
+Mtx TPS::rotate(float pitch, float head, float roll)
 {
   float sp = (float) sin( Deg2Rad( pitch ) );
   float cp = (float) cos( Deg2Rad( pitch ) );
@@ -149,7 +145,7 @@ Mtx rotate(float pitch, float head, float roll)
 }
 
 // Creates an arbitraty rotation matrix
-Mtx makeRotationMatrix(const Vec& dir, const Vec& up)
+Mtx TPS::makeRotationMatrix(const Vec& dir, const Vec& up)
 {
   Vec x = cross(up, dir), y = cross(dir, x), z = dir;
   Mtx m;
@@ -159,17 +155,8 @@ Mtx makeRotationMatrix(const Vec& dir, const Vec& up)
   return m;
 }
 
-// Transforms a vector by a matrix
-inline Vec operator* (const Vec& v, const Mtx& m)
-{
-  return Vec(
-    m.data[ 0 ] * v.x + m.data[ 1 ] * v.y + m.data[ 2 ] * v.z + m.data[ 3 ],
-    m.data[ 4 ] * v.x + m.data[ 5 ] * v.y + m.data[ 6 ] * v.z + m.data[ 7 ],
-    m.data[ 8 ] * v.x + m.data[ 9 ] * v.y + m.data[ 10 ] * v.z + m.data[ 11 ] );
-}
-
 // Multiplies a matrix by another matrix
-Mtx operator* (const Mtx& a, const Mtx& b)
+Mtx TPS::operator* (const Mtx& a, const Mtx& b)
 {
   Mtx ans;
   for ( int aRow = 0; aRow < 4; ++aRow )

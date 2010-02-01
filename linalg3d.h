@@ -47,10 +47,10 @@ namespace TPS {
       : x( a.x ), y( a.y ), z( a.z ) {}
 
     /// Norm (len^2)
-    inline float norm() const;
+    inline float norm() const { return x*x + y*y + z*z; }
 
     /// Length of the vector
-    inline float len() const;
+    inline float len() const { return (float)sqrt(norm()); }
 
     Vec &operator += ( const Vec &src ) { x += src.x; y += src.y; z += src.z; return *this; }
     Vec operator + ( const Vec &src ) const { Vec tmp( *this ); return ( tmp += src ); }
@@ -118,7 +118,13 @@ namespace TPS {
   Mtx makeRotationMatrix(const Vec& dir, const Vec& up);
 
   /// Transforms a vector by a matrix
-  inline Vec operator* (const Vec& v, const Mtx& m);
+  inline Vec operator* (const Vec& v, const Mtx& m)
+  {
+    return Vec(
+      m.data[ 0 ] * v.x + m.data[ 1 ] * v.y + m.data[ 2 ] * v.z + m.data[ 3 ],
+      m.data[ 4 ] * v.x + m.data[ 5 ] * v.y + m.data[ 6 ] * v.z + m.data[ 7 ],
+      m.data[ 8 ] * v.x + m.data[ 9 ] * v.y + m.data[ 10 ] * v.z + m.data[ 11 ] );
+  }
 
   /// Multiplies a matrix by another matrix
   Mtx operator* (const Mtx& a, const Mtx& b);
