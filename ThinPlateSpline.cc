@@ -138,14 +138,8 @@ void ThinPlateSpline::InitializeMatrix()
     }
   }
 */
-  // Calc bending energy
-  /*matrix<double> w( p, 1 );
-  for ( int i=0; i<p; ++i )
-    w(i,0) = fMtx_v(i,0);
-  matrix<double> be = prod( prod<matrix<double> >( trans(w), fMtx_orig_k ), w );
-  bending_energy = be(0,0);
-*/
 }
+
 
 double
 ThinPlateSpline::Evaluate(const double x, const double z)
@@ -161,6 +155,21 @@ ThinPlateSpline::Evaluate(const double x, const double z)
     h += fMtx_v(i,0) * tps_base_func( (pt_i-pt_cur).len() );
   }
   return h;
+}
+
+
+double
+ThinPlateSpline::GetBendingEnergy()
+  const
+{
+  // Calc bending energy
+  const unsigned int p = fControlPoints.size();
+  matrix<double> w(p, 1);
+  for (unsigned int i = 0; i < p; ++i)
+    w(i, 0) = fMtx_v(i, 0);
+  matrix<double> be = prod( prod<matrix<double> >( trans(w), fMtx_orig_k ), w );
+  const double bending_energy = be(0, 0);
+  return bending_energy;
 }
 
 

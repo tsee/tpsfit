@@ -18,6 +18,8 @@ namespace TPS {
     const std::vector<Vec>& GetControlPoints() const { return fControlPoints; }
     double GetRegularization() const { return fRegularization; }
 
+    double GetBendingEnergy() const;
+
   private:
     static double tps_base_func(double r);
     void InitializeMatrix();
