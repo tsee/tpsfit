@@ -41,8 +41,11 @@
 
 #include <vector>
 #include <cmath>
+#include <string>
+#include <iostream>
 
 using namespace boost::numeric::ublas;
+using namespace std;
 using namespace TPS;
 
 ThinPlateSpline::ThinPlateSpline() :
@@ -50,13 +53,116 @@ ThinPlateSpline::ThinPlateSpline() :
 {
 }
 
-ThinPlateSpline::ThinPlateSpline(const std::vector<Vec>& controlPoints) :
-  fRegularization(0.), fControlPoints(controlPoints)
+ThinPlateSpline::ThinPlateSpline(const std::vector<Vec>& controlPoints, const double regularization) :
+  fRegularization(regularization), fControlPoints(controlPoints)
 {
+  InitializeMatrix();
+}
+
+void ThinPlateSpline::InitializeMatrix()
+{
+  const unsigned int p = fControlPoints.size();
+
+  // Allocate the matrix
+  fMtx_l = matrix<double>(p+3, p+3);
+  fMtx_v = matrix<double>(p+3, 1);
+  fMtx_orig_k = matrix<double> (p, p);
+
+  // Fill K (p x p, upper left of L) and calculate
+  // mean edge length from control points
+  //
+  // K is symmetrical so we really have to
+  // calculate only about half of the coefficients.
+  double a = 0.0;
+  for (unsigned int i = 0; i < p; ++i) {
+    for (unsigned int j = i+1; j < p; ++j) {
+      Vec pt_i = fControlPoints[i];
+      Vec pt_j = fControlPoints[j];
+      pt_i.y = pt_j.y = 0;
+      double elen = (pt_i - pt_j).len();
+      fMtx_l(i,j) = fMtx_l(j,i) =
+        fMtx_orig_k(i,j) = fMtx_orig_k(j,i) = tps_base_func(elen);
+      a += elen * 2; // same for upper & lower tri
+    }
+  }
+  a /= (double)(p*p);
+
+  // Fill the rest of L
+  for (unsigned int i = 0; i < p; ++i) {
+    // diagonal: reqularization parameters (lambda * a^2)
+    fMtx_l(i,i) = fMtx_orig_k(i,i) = fRegularization * (a*a);
+
+    // P (p x 3, upper right)
+    fMtx_l(i, p+0) = 1.0;
+    fMtx_l(i, p+1) = fControlPoints[i].x;
+    fMtx_l(i, p+2) = fControlPoints[i].z;
+
+    // P transposed (3 x p, bottom left)
+    fMtx_l(p+0, i) = 1.0;
+    fMtx_l(p+1, i) = fControlPoints[i].x;
+    fMtx_l(p+2, i) = fControlPoints[i].z;
+  }
+  // O (3 x 3, lower right)
+  for (unsigned int i = p; i < p+3; ++i)
+    for (unsigned int j = p; j < p+3; ++j)
+      fMtx_l(i,j) = 0.0;
+
+  // Fill the right hand vector V
+  for (unsigned int i = 0; i < p; ++i)
+    fMtx_v(i,0) = fControlPoints[i].y;
+  fMtx_v(p+0, 0) = fMtx_v(p+1, 0) = fMtx_v(p+2, 0) = 0.0;
+
+  // Solve the linear system "inplace"
+  if (0 != LU_Solve(fMtx_l, fMtx_v)) {
+    cerr << "Singular matrix! Aborting." << endl; // FIXME exception
+    exit(1);
+  }
+
+/*
+  // Interpolate grid heights
+  for ( int x=-GRID_W/2; x<GRID_W/2; ++x )
+  {
+    for ( int z=-GRID_H/2; z<GRID_H/2; ++z )
+    {
+      double h = fMtx_v(p+0, 0) + fMtx_v(p+1, 0)*x + fMtx_v(p+2, 0)*z;
+      Vec pt_i, pt_cur(x,0,z);
+      for ( unsigned i=0; i<p; ++i )
+      {
+        pt_i = control_points[i];
+        pt_i.y = 0;
+        h += fMtx_v(i,0) * tps_base_func( ( pt_i - pt_cur ).len());
+      }
+      grid[x+GRID_W/2][z+GRID_H/2] = h;
+    }
+  }
+*/
+  // Calc bending energy
+  /*matrix<double> w( p, 1 );
+  for ( int i=0; i<p; ++i )
+    w(i,0) = fMtx_v(i,0);
+  matrix<double> be = prod( prod<matrix<double> >( trans(w), fMtx_orig_k ), w );
+  bending_energy = be(0,0);
+*/
+}
+
+double
+ThinPlateSpline::Evaluate(const double x, const double z)
+  const
+{
+  const unsigned int p = fControlPoints.size();
+  double h = fMtx_v(p+0, 0) + fMtx_v(p+1, 0)*x + fMtx_v(p+2, 0)*z;
+  Vec pt_i;
+  Vec pt_cur(x, 0, z);
+  for (unsigned int i = 0; i < p; ++i) {
+    pt_i = fControlPoints[i];
+    pt_i.y = 0;
+    h += fMtx_v(i,0) * tps_base_func( (pt_i-pt_cur).len() );
+  }
+  return h;
 }
 
 
-static double tps_base_func(double r)
+double ThinPlateSpline::tps_base_func(double r)
 {
   if ( r == 0.0 )
     return 0.0;

@@ -8,20 +8,25 @@
 namespace TPS {
   class ThinPlateSpline {
   public:
-    ThinPlateSpline();
-    ThinPlateSpline(const std::vector<Vec>& controlPoints);
+    ThinPlateSpline(const std::vector<Vec>& controlPoints, const double regularization = 0.);
+    ThinPlateSpline(); // for stl containers
     ~ThinPlateSpline();
 
-    void SetControlPoints(const std::vector<Vec>& controlPoints) { fControlPoints = controlPoints; }
-    const std::vector<Vec>& GetControlPoints() { return fControlPoints; }
-    void SetRegularization(const double regularization) { fRegularization = regularization; }
-    double GetRegularization() { return fRegularization; }
+    double Evaluate(const double x, const double z) const;
+
+    const std::vector<Vec>& GetControlPoints() const { return fControlPoints; }
+    double GetRegularization() const { return fRegularization; }
 
   private:
     static double tps_base_func(double r);
+    void InitializeMatrix();
 
     double fRegularization;
     std::vector<Vec> fControlPoints;
+
+    boost::numeric::ublas::matrix<double> fMtx_l;
+    boost::numeric::ublas::matrix<double> fMtx_v;
+    boost::numeric::ublas::matrix<double> fMtx_orig_k;
   };
 
 
