@@ -36,12 +36,20 @@ namespace TPS {
   class NotEnoughControlPointsException : public std::exception
   {
   public:
-    NotEnoughControlPointsException()
-    {}
+    NotEnoughControlPointsException() {}
 
-    virtual const char* what() const throw()
-    {
+    virtual const char* what() const throw() {
       return "Not enough control points for evaluating ThinPlateSpline";
+    }
+  };
+
+  class SingularMatrixException : public std::exception
+  {
+  public:
+    SingularMatrixException() {}
+
+    virtual const char* what() const throw() {
+      return "Singular matrix during LU decomposition";
     }
   };
 

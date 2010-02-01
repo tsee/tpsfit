@@ -115,10 +115,8 @@ void ThinPlateSpline::InitializeMatrix()
   fMtx_v(p+0, 0) = fMtx_v(p+1, 0) = fMtx_v(p+2, 0) = 0.0;
 
   // Solve the linear system "inplace"
-  if (0 != LU_Solve(fMtx_l, fMtx_v)) {
-    cerr << "Singular matrix! Aborting." << endl; // FIXME exception
-    exit(1);
-  }
+  if (0 != LU_Solve(fMtx_l, fMtx_v))
+    throw SingularMatrixException();
 
 /*
   // Interpolate grid heights
