@@ -57,15 +57,6 @@ int selected_cp = -1;
 double regularization = 0.0;
 double bending_energy = 0.0;
 
-static double tps_base_func(double r)
-{
-  if ( r == 0.0 )
-    return 0.0;
-  else
-    return r*r * log(r);
-}
-
-
 /*
  *  Calculate Thin Plate Spline (TPS) weights from
  *  control points and build a new height grid by
