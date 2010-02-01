@@ -88,13 +88,7 @@ static void calc_tps()
     }
   }
 
-  // Calc bending energy
-  /*matrix<double> w( p, 1 );
-  for ( int i=0; i<p; ++i )
-    w(i,0) = mtx_v(i,0);
-  matrix<double> be = prod( prod<matrix<double> >( trans(w), mtx_orig_k ), w );
-  bending_energy = be(0,0);
-  */
+  bending_energy = tps.GetBendingEnergy();
 }
 
 // ========= END INTERESTING STUFF  =========
