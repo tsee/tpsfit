@@ -6,12 +6,16 @@ LDFLAGS=-lglut -lGL -lGLU
 
 SOURCES=main.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=tpsdemo
 
-all: tpsdemo
+all: $(EXECUTABLE)
 
-tpsdemo: $(OBJECTS) 
+$(EXECUTABLE): $(OBJECTS) 
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $< -o $@
+
+clean:
+	rm -f core *~ *.bak $(OBJECTS) $(EXECUTABLE)
 
