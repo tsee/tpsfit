@@ -113,17 +113,15 @@ void draw_string (const char* str)
 // OGL: draw callback
 static void display()
 {
-  unsigned i;
-
   // Uploads a Vec to OGL
   #define UPLOADVEC(v) glVertex3f( v.x, v.y, v.z )
 
   static GLfloat color1[] = {0.8, 0.8, 0.8, 1.0};
   static GLfloat color2[] = {1.0, 1.0, 1.0, 1.0};
 
-  static GLfloat red[] = {1.0, 0.0, 0.0, 1.0};
-  static GLfloat green[] = {0.0, 1.0, 0.0, 1.0};
-  static GLfloat blue[] = {0.0, 0.0, 1.0, 1.0};
+  //static GLfloat red[] = {1.0, 0.0, 0.0, 1.0};
+  //static GLfloat green[] = {0.0, 1.0, 0.0, 1.0};
+  //static GLfloat blue[] = {0.0, 0.0, 1.0, 1.0};
 
   // Make a rotation matrix out of mouse point
 
@@ -235,10 +233,10 @@ static void display()
 
   // Control points
   int old_sel = selected_cp;
-  if ( mouseState[0] == mouseState[1] == mouseState[2] == 0 )
+  if ( mouseState[0] == 0 && mouseState[1] == 0 && mouseState[2] == 0 )
     selected_cp = -1;
 
-  for ( int i=0; i < control_points.size(); ++i )
+  for ( int i=0; i < (int)control_points.size(); ++i )
   {
     const Vec& cp = control_points[i];
     if ( ( cp - cursor_loc ).len() < 2.0 )
@@ -267,7 +265,7 @@ static void display()
 
 	// Find out the world coordinates of mouse pointer
 	// to locate the cursor
-	if ( mouseState[0] == mouseState[1] == mouseState[2] == 0 )
+	if ( mouseState[0] == 0 && mouseState[1] == 0 && mouseState[2] == 0 )
 	{
 		GLdouble model[16], proj[16];
 		GLint view[4];
@@ -298,8 +296,8 @@ static void display()
   gluOrtho2D(-1.0, 1.0, -1.0, 1.0);
   glColor3ub( 255, 255, 0 );
   glRasterPos2f (-0.95, -0.95);
-  sprintf( tmp_str, "control points: %d, reqularization: %2.3f, bending energy: %4.3f",
-    control_points.size(), regularization, bending_energy );
+  sprintf( tmp_str, "control points: %lu, reqularization: %2.3f, bending energy: %4.3f",
+    (long unsigned)control_points.size(), regularization, bending_energy );
   draw_string( tmp_str );
   glEnable( GL_DEPTH_TEST );
 
