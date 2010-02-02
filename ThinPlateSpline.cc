@@ -42,6 +42,7 @@
 #include <vector>
 #include <cmath>
 #include <string>
+#include <sstream>
 #include <iostream>
 
 using namespace boost::numeric::ublas;
@@ -53,11 +54,28 @@ ThinPlateSpline::ThinPlateSpline() :
 {
 }
 
+
 ThinPlateSpline::ThinPlateSpline(const std::vector<Vec>& controlPoints, const double regularization) :
   fRegularization(regularization), fControlPoints(controlPoints)
 {
   InitializeMatrix();
 }
+
+
+ThinPlateSpline::ThinPlateSpline(std::istream& input)
+{
+  input >> fRegularization;
+  unsigned int nPoints;
+  input >> nPoints;
+  fControlPoints.resize(nPoints);
+  for (unsigned int iPoint = 0; iPoint < nPoints; ++iPoint)
+    input >> fControlPoints[iPoint];
+
+  fMtx_l = ReadMatrix(input);  
+  fMtx_v = ReadMatrix(input);  
+  fMtx_orig_k = ReadMatrix(input);  
+}
+
 
 void ThinPlateSpline::InitializeMatrix()
 {
@@ -179,4 +197,56 @@ double ThinPlateSpline::tps_base_func(double r)
     return r*r * log(r);
 }
 
+
+std::string
+ThinPlateSpline::DumpAsString()
+  const
+{
+  ostringstream out;
+  const unsigned int p = fControlPoints.size();
+  out << fRegularization << "\n" << p << "\n";
+  for (unsigned int i = 0; i < p; i++)
+    out << fControlPoints[i] << " ";
+
+  out << "\n" << DumpMatrix(fMtx_l) << " "
+      << DumpMatrix(fMtx_v) << " "
+      << DumpMatrix(fMtx_orig_k) << "\n";
+
+  return out.str();
+}
+
+
+std::string
+ThinPlateSpline::DumpMatrix(const boost::numeric::ublas::matrix<double>& matrix)
+  const
+{
+  ostringstream out;
+  out << matrix.size1() << " " << matrix.size2() << "\n";
+  for (unsigned i = 0; i < matrix.size1(); ++i) {
+    for (unsigned j = 0; j < matrix.size2(); ++j)
+      out << matrix(i, j) << " ";
+  }
+  return out.str();
+}
+
+
+boost::numeric::ublas::matrix<double>
+ThinPlateSpline::ReadMatrix(std::istream& in)
+  const
+{
+  unsigned int size1, size2;
+  in >> size1;
+  in >> size2;
+  matrix<double> m(size1, size2);
+
+  double value;
+  for (unsigned i = 0; i < size1; ++i) {
+    for (unsigned j = 0; j < size2; ++j) {
+      in >> value;
+      m(i, j) = value;
+    }
+  }
+
+  return m;
+}
 
