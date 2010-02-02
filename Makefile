@@ -4,18 +4,22 @@ LD=g++
 CXXFLAGS=-O2 -I. -Wall
 LDFLAGS=-lglut -lGL -lGLU
 
-SOURCES=linalg3d.cc main.cc ThinPlateSpline.cc
+SOURCES=linalg3d.cc ThinPlateSpline.cc
+EXESOURCES=tpsdemo.cc tpsfit.cc
 OBJECTS=$(SOURCES:.cc=.o)
-EXECUTABLE=tpsdemo
+EXEOBJECTS=$(EXESOURCES:.cc=.o)
 
-all: $(EXECUTABLE)
+all: tpsdemo tpsfit
 
-$(EXECUTABLE): $(OBJECTS) 
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+tpsdemo: $(OBJECTS) $(EXEOBJECTS)
+	$(CC) $(LDFLAGS) tpsdemo.o $(OBJECTS) -o $@
+
+tpsfit: $(OBJECTS) $(EXEOBJECTS)
+	$(CC) $(LDFLAGS) tpsfit.o $(OBJECTS) -o $@
 
 .cc.o:
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f core *~ *.bak $(OBJECTS) $(EXECUTABLE)
+	rm -f core *~ *.bak $(OBJECTS) $(EXEOBJECTS) tpsdemo tpsfit
 
