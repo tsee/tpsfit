@@ -23,7 +23,7 @@
  */
 
 #include <cmath>
-
+#include <iostream>
 
 // =========================================
 // 3-vector
@@ -52,20 +52,25 @@ namespace TPS {
     /// Length of the vector
     inline float len() const { return (float)sqrt(norm()); }
 
-    Vec &operator += ( const Vec &src ) { x += src.x; y += src.y; z += src.z; return *this; }
-    Vec operator + ( const Vec &src ) const { Vec tmp( *this ); return ( tmp += src ); }
-    Vec &operator -= ( const Vec &src ) { x -= src.x; y -= src.y; z -= src.z; return *this; }
-    Vec operator - ( const Vec &src ) const { Vec tmp( *this ); return ( tmp -= src ); }
+    Vec &operator+= (const Vec& src) { x += src.x; y += src.y; z += src.z; return *this; }
+    Vec operator+ (const Vec& src) const { Vec tmp( *this ); return ( tmp += src ); }
+    Vec &operator-= (const Vec& src) { x -= src.x; y -= src.y; z -= src.z; return *this; }
+    Vec operator- (const Vec& src) const { Vec tmp( *this ); return ( tmp -= src ); }
 
-    Vec operator - () const { return Vec(-x,-y,-z); }
+    Vec operator- () const { return Vec(-x,-y,-z); }
 
-    Vec &operator *= ( const float src ) { x *= src; y *= src; z *= src;  return *this; }
-    Vec operator * ( const float src ) const { Vec tmp( *this ); return ( tmp *= src ); }
-    Vec &operator /= ( const float src ) { x /= src; y /= src; z /= src; return *this; }
-    Vec operator / ( const float src ) const { Vec tmp( *this ); return ( tmp /= src ); }
+    Vec &operator*= (const float src) { x *= src; y *= src; z *= src;  return *this; }
+    Vec operator* (const float src) const { Vec tmp( *this ); return ( tmp *= src ); }
+    Vec &operator/= (const float src) { x /= src; y /= src; z /= src; return *this; }
+    Vec operator/ (const float src) const { Vec tmp( *this ); return ( tmp /= src ); }
 
-    bool operator == (const Vec& b) const;
+    bool operator== (const Vec& b) const;
+    
+    void WriteTo(std::ostream& stream) const;
   };
+
+  std::ostream& operator<<(std::ostream& stream, Vec const& obj);
+  std::istream& operator>>(std::istream& stream, Vec& obj);
 
   /// Left hand float multplication
   Vec operator* (const float src, const Vec& v);

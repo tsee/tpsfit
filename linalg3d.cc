@@ -41,6 +41,30 @@ inline Vec TPS::cross(const Vec &a, const Vec &b) {
   return Vec( a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x );
 }
 
+// streaming
+void
+Vec::WriteTo(std::ostream& stream)
+  const
+{
+  stream << x << " " << y << " " << z;
+}
+
+std::ostream&
+TPS::operator<<(std::ostream& stream, Vec const& obj)
+{
+  obj.WriteTo(stream);
+  return stream;
+}
+
+std::istream&
+TPS::operator>>(std::istream& stream, Vec& obj)
+{
+  stream >> obj.x;
+  stream >> obj.y;
+  stream >> obj.z;
+  return stream;
+}
+
 
 
 // Creates an identity matrix
