@@ -14,7 +14,7 @@ using namespace TPS;
 void validateTPS(ThinPlateSpline& tps, unsigned int& testNo, vector<Vec>& ctrl) {
   ostringstream str;
   str << tps;
-  cerr << str.str();
+  //cerr << str.str();
   istringstream in(str.str());
 
   int n;
@@ -113,7 +113,7 @@ void validateTPS(ThinPlateSpline& tps, unsigned int& testNo, vector<Vec>& ctrl) 
   }
 }
 
-const unsigned int nTests = 186;
+const unsigned int nTests = 370;
 int main (const int /*argc*/, const char** /*argv*/) {
   cout << "1.." << nTests << endl;
   unsigned int testNo = 0;
@@ -141,6 +141,11 @@ int main (const int /*argc*/, const char** /*argv*/) {
 
     ThinPlateSpline tps(ctrl, 2.5);
     validateTPS(tps, testNo, ctrl);
+    ostringstream out;
+    out << tps;
+    istringstream in(out.str());
+    ThinPlateSpline tps2(in);
+    validateTPS(tps2, testNo, ctrl);
   } // end scope
 
 }
