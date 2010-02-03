@@ -23,13 +23,10 @@
 #include <cmath>
 #include "TPSException.h"
 
-#define EPSILON 0.00001f
 #define Deg2Rad(Ang) ((float)( Ang * M_PI / 180.0 ))
 #define Rad2Deg(Ang) ((float)( Ang * 180.0 / M_PI ))
 
 using namespace TPS;
-
-bool TPS::Vec::operator== ( const Vec& b) const { return ((*this)-b).norm() < EPSILON; }
 
 // Left hand float multplication
 inline Vec TPS::operator* ( const float src, const Vec& v ) { Vec tmp(v); return (tmp *= src); }
@@ -212,6 +209,6 @@ float Plane::classify(const Vec& pt)
   const
 {
   float f = dot( normal, pt ) + d;
-  return ( f > -EPSILON && f < EPSILON ) ? 0 : f;
+  return ( f > -kEPSILON && f < kEPSILON ) ? 0 : f;
 }
 

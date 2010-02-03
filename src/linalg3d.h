@@ -30,6 +30,7 @@
 // =========================================
 namespace TPS {
 
+  static const double kEPSILON = 1.e-5;
   class Vec {
   public:
 
@@ -64,13 +65,14 @@ namespace TPS {
     Vec &operator/= (const float src) { x /= src; y /= src; z /= src; return *this; }
     Vec operator/ (const float src) const { Vec tmp( *this ); return ( tmp /= src ); }
 
-    bool operator== (const Vec& b) const;
+    bool operator== (const Vec& b) const { return (*this-b).norm() < kEPSILON; }
     
     void WriteTo(std::ostream& stream) const;
   };
 
   std::ostream& operator<<(std::ostream& stream, Vec const& obj);
   std::istream& operator>>(std::istream& stream, Vec& obj);
+
 
   /// Left hand float multplication
   Vec operator* (const float src, const Vec& v);
