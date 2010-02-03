@@ -67,7 +67,7 @@ namespace TPS {
 
     bool operator== (const Vec& b) const { return (*this-b).norm() < kEPSILON; }
     
-    void WriteTo(std::ostream& stream) const;
+    void WriteTo(std::ostream& stream) const { stream << x << " " << y << " " << z; }
   };
 
   std::ostream& operator<<(std::ostream& stream, Vec const& obj);

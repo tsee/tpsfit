@@ -40,13 +40,6 @@ inline Vec TPS::cross(const Vec &a, const Vec &b) {
 }
 
 // streaming
-void
-Vec::WriteTo(std::ostream& stream)
-  const
-{
-  stream << x << " " << y << " " << z;
-}
-
 std::ostream&
 TPS::operator<<(std::ostream& stream, Vec const& obj)
 {
