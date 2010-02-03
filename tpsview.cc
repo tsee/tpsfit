@@ -250,21 +250,21 @@ static void display()
     glEnd();
   }
 
-	// Find out the world coordinates of mouse pointer
-	// to locate the cursor
-	if ( mouseState[0] == 0 && mouseState[1] == 0 && mouseState[2] == 0 )
-	{
-		GLdouble model[16], proj[16];
-		GLint view[4];
-		GLfloat z;
-		GLdouble ox, oy, oz;
+  // Find out the world coordinates of mouse pointer
+  // to locate the cursor
+  if ( mouseState[0] == 0 && mouseState[1] == 0 && mouseState[2] == 0 )
+  {
+    GLdouble model[16], proj[16];
+    GLint view[4];
+    GLfloat z;
+    GLdouble ox, oy, oz;
 
-		glGetDoublev(GL_MODELVIEW_MATRIX, model);
-		glGetDoublev(GL_PROJECTION_MATRIX, proj);
-		glGetIntegerv(GL_VIEWPORT, view);
+    glGetDoublev(GL_MODELVIEW_MATRIX, model);
+    glGetDoublev(GL_PROJECTION_MATRIX, proj);
+    glGetIntegerv(GL_VIEWPORT, view);
 
-		glReadPixels(mouseX, view[3]-mouseY-1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z);
-		gluUnProject(mouseX, view[3]-mouseY-1, z, model, proj, view, &ox, &oy, &oz);
+    glReadPixels(mouseX, view[3]-mouseY-1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z);
+    gluUnProject(mouseX, view[3]-mouseY-1, z, model, proj, view, &ox, &oy, &oz);
 
     cursor_loc = Vec(ox, oy, oz);
 
@@ -275,7 +275,7 @@ static void display()
     glColor3ub( 255, 0, 255 );
     glutSolidSphere(0.5,12,12);
     glPopMatrix();
-	}
+  }
 
   static char tmp_str[255];
   glDisable( GL_DEPTH_TEST );
@@ -289,18 +289,18 @@ static void display()
   glEnable( GL_DEPTH_TEST );
 
   glFlush();
-	glutSwapBuffers();
+  glutSwapBuffers();
   screen_dirty = false;
 }
 
 // OGL: window resize callback
 static void reshape( int w, int h )
 {
-	winW = w;
-	winH = h;
-	glViewport( 0, 0, winW, winH );
-	glEnable( GL_DEPTH_TEST );
-	glDisable( GL_CULL_FACE );
+  winW = w;
+  winH = h;
+  glViewport( 0, 0, winW, winH );
+  glEnable( GL_DEPTH_TEST );
+  glDisable( GL_CULL_FACE );
   glEnable( GL_NORMALIZE );
   glDepthFunc( GL_LESS );
 }
@@ -345,19 +345,19 @@ static void keyboard( unsigned char key, int, int )
 // OGL: mouse button callback
 static void mouse( int button, int state, int, int )
 {
-	mouseState[ button ] = (state==GLUT_DOWN);
-	modifiers = glutGetModifiers();
+  mouseState[ button ] = (state==GLUT_DOWN);
+  modifiers = glutGetModifiers();
 
   glutSetCursor( GLUT_CURSOR_CROSSHAIR );
 
   if ( button == 1 && state==GLUT_DOWN )
       glutSetCursor( GLUT_CURSOR_CYCLE );
 
-	if ( button == 0 )
+  if ( button == 0 )
   {
     if ( state==GLUT_UP )
     {
-		  calc_tps();
+      calc_tps();
       screen_dirty=true;
     }
     else if ( state==GLUT_DOWN && selected_cp<0 )
@@ -368,17 +368,17 @@ static void mouse( int button, int state, int, int )
 // OGL: mouse movement callback
 static void mouseMotion( int x, int y )
 {
-	if ( mouseState[0] && mouseX != -999 )
+  if ( mouseState[0] && mouseX != -999 )
     if ( selected_cp >= 0 )
-			 control_points[selected_cp].y += -(y - mouseY)/3;
+       control_points[selected_cp].y += -(y - mouseY)/3;
 
-	if ( mouseState[1] && mouseX != -999 )
-	{
+  if ( mouseState[1] && mouseX != -999 )
+  {
     camAlpha += -(y - mouseY);
     camBeta += (x - mouseX);
 
     screen_dirty=true;
-	}
+  }
 
   if ( mouseX != x || mouseY != y )
   {
@@ -424,12 +424,12 @@ static void create_menu(void)
 // Print out OpenGL errors, if any
 static void glCheckErrors()
 {
-	GLenum errCode = glGetError();
-	if ( errCode != GL_NO_ERROR )
-	{
-		const GLubyte *errString = gluErrorString( errCode );
-		fprintf(stderr, "OpenGL error: %s\n", errString);
-	}
+  GLenum errCode = glGetError();
+  if ( errCode != GL_NO_ERROR )
+  {
+    const GLubyte *errString = gluErrorString( errCode );
+    fprintf(stderr, "OpenGL error: %s\n", errString);
+  }
 }
 
 // OGL: idle callback, continuosly keep redrawing
