@@ -74,9 +74,9 @@ ThinPlateSpline::ThinPlateSpline(std::istream& input)
   for (unsigned int iPoint = 0; iPoint < nPoints; ++iPoint)
     input >> fControlPoints[iPoint];
 
-  fMtx_l = ReadMatrix(input);  
-  fMtx_v = ReadMatrix(input);  
-  fMtx_orig_k = ReadMatrix(input);  
+  fMtx_l = ReadMatrix(input);
+  fMtx_v = ReadMatrix(input);
+  fMtx_orig_k = ReadMatrix(input);
 }
 
 
