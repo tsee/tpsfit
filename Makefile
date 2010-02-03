@@ -1,28 +1,35 @@
 
+
+BINDIR=bin
+SRCDIR=src
+
 CXX=g++
 LD=g++
-CXXFLAGS=-O2 -I. -Wall
+CXXFLAGS=-O2 -I. -I$(SRCDIR) -Wall
 LDFLAGS=-lglut -lGL -lGLU
 
-SOURCES=linalg3d.cc ThinPlateSpline.cc
-EXESOURCES=tpsdemo.cc tpsfit.cc tpsview.cc
+SOURCES=$(SRCDIR)/linalg3d.cc $(SRCDIR)/ThinPlateSpline.cc
+EXESOURCES=$(SRCDIR)/tpsdemo.cc $(SRCDIR)/tpsfit.cc $(SRCDIR)/tpsview.cc
 OBJECTS=$(SOURCES:.cc=.o)
 EXEOBJECTS=$(EXESOURCES:.cc=.o)
 
-all: tpsdemo tpsfit tpsview
+all: bin $(BINDIR)/tpsdemo $(BINDIR)/tpsfit $(BINDIR)/tpsview
 
-tpsview: $(OBJECTS) $(EXEOBJECTS)
-	$(CC) $(LDFLAGS) tpsview.o $(OBJECTS) -o $@
+bin:
+	@mkdir -p bin
 
-tpsdemo: $(OBJECTS) $(EXEOBJECTS)
-	$(CC) $(LDFLAGS) tpsdemo.o $(OBJECTS) -o $@
+$(BINDIR)/tpsview: $(OBJECTS) $(EXEOBJECTS)
+	$(CC) $(LDFLAGS) $(SRCDIR)/tpsview.o $(OBJECTS) -o $@
 
-tpsfit: $(OBJECTS) $(EXEOBJECTS)
-	$(CC) $(LDFLAGS) tpsfit.o $(OBJECTS) -o $@
+$(BINDIR)/tpsdemo: $(OBJECTS) $(EXEOBJECTS)
+	$(CC) $(LDFLAGS) $(SRCDIR)/tpsdemo.o $(OBJECTS) -o $@
+
+$(BINDIR)/tpsfit: $(OBJECTS) $(EXEOBJECTS)
+	$(CC) $(LDFLAGS) $(SRCDIR)/tpsfit.o $(OBJECTS) -o $@
 
 .cc.o:
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f core *~ *.bak $(OBJECTS) $(EXEOBJECTS) tpsdemo tpsfit tpsview
+	rm -f core *~ *.bak $(OBJECTS) $(EXEOBJECTS) $(BINDIR)/tpsdemo $(BINDIR)/tpsfit $(BINDIR)/tpsview
 
