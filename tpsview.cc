@@ -46,16 +46,11 @@ using namespace boost::numeric::ublas;
 using namespace TPS;
 
 
-// ========= BEGIN INTERESTING STUFF  =========
-
 #define GRID_W 100
 #define GRID_H 100
 static float grid[GRID_W][GRID_H];
 
-std::vector< Vec > control_points;
-
 TPS::ThinPlateSpline* theTPS = NULL;
-double bending_energy = 0.0;
 
 /*
  *  Calculate Thin Plate Spline (TPS) weights from
@@ -64,34 +59,27 @@ double bending_energy = 0.0;
  */
 static void calc_tps()
 {
-  if (control_points.size() < 3)
+  if (theTPS == NULL) {
+    cerr << "TPS unintialized!" << endl;
     return;
-
-  ThinPlateSpline tps(control_points, regularization);
+  }
 
   // Interpolate grid heights
   for ( int x=-GRID_W/2; x<GRID_W/2; ++x )
   {
     for ( int z=-GRID_H/2; z<GRID_H/2; ++z )
     {
-      double h = tps.Evaluate(x, z);
+      double h = theTPS->Evaluate(x, z);
       grid[x+GRID_W/2][z+GRID_H/2] = h;
     }
   }
-
-  bending_energy = tps.GetBendingEnergy();
 }
-
-// ========= END INTERESTING STUFF  =========
-// (The rest is essentially just visualization with OpenGL,
-//  altough that can for sure be interesting, too.)
 
 
 static int winW = 800, winH = 600;
 static int mouseX = -999, mouseY = -999;
 static bool mouseState[3] = {false};
 static int modifiers = 0;
-Vec cursor_loc;
 static float camAlpha=30, camBeta=5, camZoom=0;
 static bool screen_dirty=true;
 
@@ -266,8 +254,6 @@ static void display()
     glReadPixels(mouseX, view[3]-mouseY-1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z);
     gluUnProject(mouseX, view[3]-mouseY-1, z, model, proj, view, &ox, &oy, &oz);
 
-    cursor_loc = Vec(ox, oy, oz);
-
     // Draw the cursor
     glPushMatrix();
     glDisable(GL_LIGHTING) ;
@@ -284,7 +270,7 @@ static void display()
   glColor3ub( 255, 255, 0 );
   glRasterPos2f (-0.95, -0.95);
   sprintf( tmp_str, "control points: %lu, reqularization: %2.3f, bending energy: %4.3f",
-    (long unsigned)control_points.size(), regularization, bending_energy );
+    (long unsigned)control_points.size(), theTPS->GetRegularization(), theTPS->GetBendingEnergy());
   draw_string( tmp_str );
   glEnable( GL_DEPTH_TEST );
 
@@ -310,31 +296,6 @@ static void keyboard( unsigned char key, int, int )
 {
   switch (key)
   {
-    case 'a':
-      control_points.push_back( cursor_loc );
-      calc_tps();
-      break;
-    case 'd':
-      if ( selected_cp >= 0 )
-      {
-        control_points.erase( control_points.begin() + selected_cp );
-        selected_cp = -1;
-        calc_tps();
-      }
-      break;
-    case 'c':
-      control_points.clear();
-      clear_grid();
-      break;
-    case '+':
-      regularization += 0.025;
-      calc_tps();
-      break;
-    case '-':
-      regularization -= 0.025;
-      if (regularization < 0) regularization = 0;
-      calc_tps();
-      break;
     case '/': camZoom -= 1; break;
     case '*': camZoom += 1; break;
     case 'q': exit( 0 ); break;
@@ -352,17 +313,6 @@ static void mouse( int button, int state, int, int )
 
   if ( button == 1 && state==GLUT_DOWN )
       glutSetCursor( GLUT_CURSOR_CYCLE );
-
-  if ( button == 0 )
-  {
-    if ( state==GLUT_UP )
-    {
-      calc_tps();
-      screen_dirty=true;
-    }
-    else if ( state==GLUT_DOWN && selected_cp<0 )
-      keyboard( 'a', 0,0 );
-  }
 }
 
 // OGL: mouse movement callback
@@ -410,11 +360,6 @@ static void menu_select(int mode)
 static void create_menu(void)
 {
   glutCreateMenu(menu_select);
-  glutAddMenuEntry(" d     Delete control point",'d');
-  glutAddMenuEntry(" a     Add control point",'a');
-  glutAddMenuEntry(" c     Clear all",'c');
-  glutAddMenuEntry(" +     Relax more",'+');
-  glutAddMenuEntry(" -     Rela less",'-');
   glutAddMenuEntry(" /     Zoom in",'/');
   glutAddMenuEntry(" *     Zoom out",'*');
   glutAddMenuEntry(" q     Exit",'q');
