@@ -58,9 +58,6 @@ ThinPlateSpline::ThinPlateSpline() :
 ThinPlateSpline::ThinPlateSpline(const std::vector<Vec>& controlPoints, const double regularization) :
   fRegularization(regularization), fControlPoints(controlPoints)
 {
-  cout << regularization << endl;
-  for (unsigned int i = 0; i < controlPoints.size(); ++i)
-  cout << controlPoints[i] << endl;
   InitializeMatrix();
 }
 
@@ -212,9 +209,9 @@ ThinPlateSpline::WriteToStream(std::ostream& stream)
 
   stream << "\n";
   DumpMatrix(stream, fMtx_l);
-  stream << " ";
+  stream << "\n";
   DumpMatrix(stream, fMtx_v);
-  stream << " ";
+  stream << "\n";
   DumpMatrix(stream, fMtx_orig_k);
   stream << "\n";
 }
