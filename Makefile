@@ -41,8 +41,12 @@ $(BINDIR)/tpsdemo: $(OBJECTS) $(EXEOBJECTS)
 $(BINDIR)/tpsfit: $(OBJECTS) $(EXEOBJECTS)
 	$(CXX) $(LDFLAGS) $(SRCDIR)/tpsfit.o $(OBJECTS) -o $@
 
+# testing targets
 test: all $(TESTOBJECTS) $(TESTEXECUTABLES)
 	perl -MTest::Harness -e 'runtests(qw($(TESTDIR)/Vec $(TESTDIR)/streaming))'
+
+test_verbose: all $(TESTOBJECTS) $(TESTEXECUTABLES)
+	perl -MTest::Harness -e '$$Test::Harness::verbose=1;runtests(qw($(TESTDIR)/Vec $(TESTDIR)/streaming))'
 
 # test executables
 $(TESTDIR)/streaming: $(OBJECTS) $(TESTOBJECTS)
