@@ -67,9 +67,53 @@ void validateTPS(ThinPlateSpline& tps, unsigned int& testNo, vector<Vec>& ctrl) 
 
     }
   }
+
+  // check second matrix size
+  in >> n;
+  assertStream(in, testNo);
+  ASSERT(n == 7, "size-x of second matrix");
+  in >> n;
+  assertStream(in, testNo);
+  ASSERT(n == 1, "size-y of second matrix");
+
+  // check second matrix itself
+  double matrix2[7][1] = { {-0.0198328}, {-0.00661092}, {0.00771274},
+                           {0.0187309}, {-0.25076}, {0.393784}, {0.652772} };
+  for (unsigned int ix = 0; ix < 7; ++ix) {
+    for (unsigned int iy = 0; iy < 1; ++iy) {
+      in >> v;
+      assertStream(in, testNo);
+      ASSERT_EQUAL(v, matrix2[ix][iy], "matrix2 elem");
+
+    }
+  }
+
+  // check third matrix size
+  in >> n;
+  assertStream(in, testNo);
+  ASSERT(n == 4, "size-x of third matrix");
+  in >> n;
+  assertStream(in, testNo);
+  ASSERT(n == 4, "size-y of third matrix");
+
+  // check third matrix itself
+  double matrix3[4][4] = {
+    {34.6775, 11.5129, 76.1282, 4.02359},
+    {11.5129, 34.6775, 48.8258, 24.0823},
+    {76.1282, 48.8258, 34.6775, 153.96},
+    {4.02359, 24.0823, 153.96, 34.6775},
+  };
+  for (unsigned int ix = 0; ix < 4; ++ix) {
+    for (unsigned int iy = 0; iy < 4; ++iy) {
+      in >> v;
+      assertStream(in, testNo);
+      ASSERT_EQUAL(v, matrix3[ix][iy], "matrix3 elem");
+
+    }
+  }
 }
 
-const unsigned int nTests = 132;
+const unsigned int nTests = 186;
 int main (const int /*argc*/, const char** /*argv*/) {
   cout << "1.." << nTests << endl;
   unsigned int testNo = 0;
