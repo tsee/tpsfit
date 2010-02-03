@@ -17,7 +17,7 @@ int main (const int /*argc*/, const char** /*argv*/) {
   cout << "1.." << nTests << endl;
   unsigned int testNo = 0;
   cout << "ok " << ++testNo << " - running" << endl;
-  
+
   { // scope
     Vec testV(1., 5.2, 2.3);
     std::ostringstream str;
@@ -54,7 +54,7 @@ int main (const int /*argc*/, const char** /*argv*/) {
     in >> n;
     assertStream(in, testNo);
     ASSERT_EQUAL((unsigned int)n, ctrl.size(), "no. control points okay");
-    
+
     // check ctrl points themselves
     for (unsigned int iVec = 0; iVec < ctrl.size(); ++iVec) {
       in >> v;
@@ -67,8 +67,8 @@ int main (const int /*argc*/, const char** /*argv*/) {
       assertStream(in, testNo);
       ASSERT_EQUAL(v, ctrl[iVec].z, "component of ctrl point okay");
     }
-    
+
   }
-  
+
 }
 
