@@ -68,12 +68,11 @@ static void calc_tps()
   }
 
   // Interpolate grid heights
-  for ( int x=-GRID_W/2; x<GRID_W/2; ++x )
-  {
-    for ( int z=-GRID_H/2; z<GRID_H/2; ++z )
-    {
-      double h = theTPS->Evaluate(x, z);
+  for (int x = -GRID_W/2; x < GRID_W/2; ++x) {
+    for (int z = -GRID_H/2; z < GRID_H/2; ++z) {
+      const double h = theTPS->Evaluate(x, z);
       grid[x+GRID_W/2][z+GRID_H/2] = h;
+      cout << h << endl;
     }
   }
 }
@@ -88,16 +87,17 @@ static bool screen_dirty=true;
 
 static void clear_grid()
 {
-  for (int x=0; x<GRID_W; ++x)
-    for (int z=0; z<GRID_H; ++z)
+  for (int x = 0; x < GRID_W; ++x) {
+    for (int z = 0; z < GRID_H; ++z)
       grid[x][z] = 0;
+  }
 }
 
 #define SQUARE(x) ((x)*(x))
 
 void draw_string (const char* str)
 {
-  for (unsigned i=0; i<strlen(str); i++)
+  for (unsigned i = 0; i < strlen(str); ++i)
     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, str[i]);
 };
 
