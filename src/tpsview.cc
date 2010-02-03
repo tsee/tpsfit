@@ -457,10 +457,11 @@ int main( int argc, char *argv[] )
   glLightfv(GL_LIGHT1, GL_SPECULAR,light1Specular) ;
 
   glCheckErrors();
-  clear_grid();
+  //clear_grid();
 
   create_menu() ;
   glutMainLoop();
+
 
   delete theTPS;
   return 0;
