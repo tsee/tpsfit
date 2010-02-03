@@ -53,9 +53,8 @@ using namespace TPS;
 static float grid[GRID_W][GRID_H];
 
 std::vector< Vec > control_points;
-int selected_cp = -1;
 
-double regularization = 0.0;
+TPS::ThinPlateSpline* theTPS = NULL;
 double bending_energy = 0.0;
 
 /*
@@ -233,25 +232,15 @@ static void display()
 #endif
 
   // Control points
-  int old_sel = selected_cp;
-  if ( mouseState[0] == 0 && mouseState[1] == 0 && mouseState[2] == 0 )
-    selected_cp = -1;
 
+  const vector<Vec> control_points = theTPS->GetControlPoints();
   for ( int i=0; i < (int)control_points.size(); ++i )
   {
     const Vec& cp = control_points[i];
-    if ( ( cp - cursor_loc ).len() < 2.0 )
-    {
-      selected_cp = i;
-      glutSetCursor( GLUT_CURSOR_UP_DOWN );
-    }
 
     glPushMatrix();
     glTranslatef(cp.x, cp.y, cp.z);
-    if ( selected_cp == i )
-      glColor3ub( 0, 255, 255 );
-    else
-      glColor3ub( 255, 255, 0 );
+    glColor3ub( 255, 255, 0 );
     glutSolidSphere(1.0,12,12);
     glPopMatrix();
 
@@ -260,9 +249,6 @@ static void display()
     glVertex3f( cp.x, cp.y, cp.z );
     glEnd();
   }
-
-  if ( selected_cp < 0 && old_sel != selected_cp )
-    glutSetCursor( GLUT_CURSOR_CROSSHAIR );
 
 	// Find out the world coordinates of mouse pointer
 	// to locate the cursor
