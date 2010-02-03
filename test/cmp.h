@@ -6,6 +6,9 @@
     std::cout << "not "; \
   std::cout << "ok " << ++testNo << " - " << desc << std::endl;
 
+#define ASSERT_EQUAL(left, right, desc) if (!equal((left), (right))) \
+    std::cout << "not "; \
+  std::cout << "ok " << ++testNo << " - " << desc << std::endl;
 
 namespace TPS {
   bool equal(double a, double b) {
