@@ -26,13 +26,13 @@ bin:
 	@mkdir -p bin
 
 $(BINDIR)/tpsview: $(OBJECTS) $(EXEOBJECTS)
-	$(CC) $(LDFLAGS) $(SRCDIR)/tpsview.o $(OBJECTS) -o $@
+	$(CXX) $(LDFLAGS) $(SRCDIR)/tpsview.o $(OBJECTS) -o $@
 
 $(BINDIR)/tpsdemo: $(OBJECTS) $(EXEOBJECTS)
-	$(CC) $(LDFLAGS) $(SRCDIR)/tpsdemo.o $(OBJECTS) -o $@
+	$(CXX) $(LDFLAGS) $(SRCDIR)/tpsdemo.o $(OBJECTS) -o $@
 
 $(BINDIR)/tpsfit: $(OBJECTS) $(EXEOBJECTS)
-	$(CC) $(LDFLAGS) $(SRCDIR)/tpsfit.o $(OBJECTS) -o $@
+	$(CXX) $(LDFLAGS) $(SRCDIR)/tpsfit.o $(OBJECTS) -o $@
 
 .cc.o:
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -41,7 +41,7 @@ test: $(OBJECTS) $(TESTOBJECTS) $(TESTEXECUTABLES)
 	perl -MTest::Harness -e 'runtests(qw($(TESTDIR)/Vec $(TESTDIR)/streaming))'
 
 $(TESTDIR)/steaming:
-	$(CC) $(LDFLAGS) $(TESTDIR)/streaming.o $(OBJECTS) -o $@
+	$(CXX) $(LDFLAGS) $(TESTDIR)/streaming.o $(OBJECTS) -o $@
 
 clean:
 	rm -f core *~ *.bak $(OBJECTS) $(EXEOBJECTS) $(TESTOBJECTS) $(EXECUTABLES) $(TESTEXECUTABLES)
