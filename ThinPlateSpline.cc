@@ -58,6 +58,9 @@ ThinPlateSpline::ThinPlateSpline() :
 ThinPlateSpline::ThinPlateSpline(const std::vector<Vec>& controlPoints, const double regularization) :
   fRegularization(regularization), fControlPoints(controlPoints)
 {
+  cout << regularization << endl;
+  for (unsigned int i = 0; i < controlPoints.size(); ++i)
+  cout << controlPoints[i] << endl;
   InitializeMatrix();
 }
 
@@ -198,35 +201,34 @@ double ThinPlateSpline::tps_base_func(double r)
 }
 
 
-std::string
-ThinPlateSpline::DumpAsString()
+void
+ThinPlateSpline::WriteToStream(std::ostream& stream)
   const
 {
-  ostringstream out;
   const unsigned int p = fControlPoints.size();
-  out << fRegularization << "\n" << p << "\n";
+  stream << fRegularization << "\n" << p << "\n";
   for (unsigned int i = 0; i < p; i++)
-    out << fControlPoints[i] << " ";
+    stream << fControlPoints[i] << " ";
 
-  out << "\n" << DumpMatrix(fMtx_l) << " "
-      << DumpMatrix(fMtx_v) << " "
-      << DumpMatrix(fMtx_orig_k) << "\n";
-
-  return out.str();
+  stream << "\n";
+  DumpMatrix(stream, fMtx_l);
+  stream << " ";
+  DumpMatrix(stream, fMtx_v);
+  stream << " ";
+  DumpMatrix(stream, fMtx_orig_k);
+  stream << "\n";
 }
 
 
-std::string
-ThinPlateSpline::DumpMatrix(const boost::numeric::ublas::matrix<double>& matrix)
+void
+ThinPlateSpline::DumpMatrix(std::ostream& stream, const boost::numeric::ublas::matrix<double>& matrix)
   const
 {
-  ostringstream out;
-  out << matrix.size1() << " " << matrix.size2() << "\n";
+  stream << matrix.size1() << " " << matrix.size2() << "\n";
   for (unsigned i = 0; i < matrix.size1(); ++i) {
     for (unsigned j = 0; j < matrix.size2(); ++j)
-      out << matrix(i, j) << " ";
+      stream << matrix(i, j) << " ";
   }
-  return out.str();
 }
 
 
@@ -248,5 +250,11 @@ ThinPlateSpline::ReadMatrix(std::istream& in)
   }
 
   return m;
+}
+
+std::ostream&
+TPS::operator<<(std::ostream& stream, const ThinPlateSpline& tps) {
+  tps.WriteToStream(stream);
+  return stream;
 }
 

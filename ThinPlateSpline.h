@@ -7,6 +7,7 @@
 #include <string>
 #include <iostream>
 #include "linalg3d.h"
+#include "TPSException.h"
 
 namespace TPS {
   class ThinPlateSpline {
@@ -22,12 +23,12 @@ namespace TPS {
     double GetRegularization() const { return fRegularization; }
 
     double GetBendingEnergy() const;
-    std::string DumpAsString() const;
+    void WriteToStream(std::ostream& stream) const;
 
   private:
     static double tps_base_func(double r);
     void InitializeMatrix();
-    std::string DumpMatrix(const boost::numeric::ublas::matrix<double>& matrix) const;
+    void DumpMatrix(std::ostream& stream, const boost::numeric::ublas::matrix<double>& matrix) const;
     boost::numeric::ublas::matrix<double> ReadMatrix(std::istream& in) const;
 
     double fRegularization;
@@ -38,38 +39,7 @@ namespace TPS {
     boost::numeric::ublas::matrix<double> fMtx_orig_k;
   };
 
-
-  class TPSException : public std::exception
-  {
-  public:
-    TPSException() {}
-
-    virtual const char* what() const throw() {
-      return "Generic ThinPlateSpline exception. Nuke your programmer.";
-    }
-  };
-
-
-  class NotEnoughControlPointsException : public TPSException
-  {
-  public:
-    NotEnoughControlPointsException() {}
-
-    virtual const char* what() const throw() {
-      return "Not enough control points for evaluating ThinPlateSpline";
-    }
-  };
-
-
-  class SingularMatrixException : public TPSException
-  {
-  public:
-    SingularMatrixException() {}
-
-    virtual const char* what() const throw() {
-      return "Singular matrix during LU decomposition";
-    }
-  };
+  std::ostream& operator<<(std::ostream& stream, const ThinPlateSpline& tps);
 
 } // end namespace TPS
 

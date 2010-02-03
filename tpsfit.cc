@@ -18,8 +18,10 @@
 
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 #include <cstdlib>
+#include <limits>
 
 #include "linalg3d.h"
 #include "ThinPlateSpline.h"
@@ -44,6 +46,7 @@ int main(const int argc, const char** argv) {
     usage();
     exit(1);
   }
+  cout << scientific << std::setprecision(numeric_limits<double>::digits10 + 1);
 
   double regularization = 0.;
   if (argc == 3)
@@ -53,15 +56,20 @@ int main(const int argc, const char** argv) {
   in.open(argv[1]);
   vector<Vec> control_points;
   while (in.good()) {
-    if (in.eof())
-      break;
     Vec cp;
-    in >> cp;
+    try {
+      in >> cp;
+    }
+    catch (EndOfFileException e) {
+      break;
+    }
+
     control_points.push_back(cp);
   }
 
   ThinPlateSpline tps(control_points, regularization);
-  cout << tps.DumpAsString()<<endl;
+
+  cout << tps <<endl;
   return 0;
 }
 
