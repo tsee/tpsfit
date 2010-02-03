@@ -45,10 +45,10 @@ test: all $(TESTOBJECTS) $(TESTEXECUTABLES)
 	perl -MTest::Harness -e 'runtests(qw($(TESTDIR)/Vec $(TESTDIR)/streaming))'
 
 # test executables
-$(TESTDIR)/streaming:
+$(TESTDIR)/streaming: $(OBJECTS) $(TESTOBJECTS)
 	$(CXX) $(LDFLAGS) $(TESTDIR)/streaming.o $(OBJECTS) -o $@
 
-$(TESTDIR)/Vec:
+$(TESTDIR)/Vec: $(OBJECTS) $(TESTOBJECTS)
 	$(CXX) $(LDFLAGS) $(TESTDIR)/Vec.o $(OBJECTS) -o $@
 
 
