@@ -35,6 +35,8 @@
 #include "ludecomposition.h"
 
 #include <vector>
+#include <iostream>
+#include <fstream>
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
@@ -44,13 +46,14 @@
 
 using namespace boost::numeric::ublas;
 using namespace TPS;
+using namespace std;
 
 
 #define GRID_W 100
 #define GRID_H 100
 static float grid[GRID_W][GRID_H];
 
-TPS::ThinPlateSpline* theTPS = NULL;
+ThinPlateSpline* theTPS = NULL;
 
 /*
  *  Calculate Thin Plate Spline (TPS) weights from
@@ -221,7 +224,7 @@ static void display()
 
   // Control points
 
-  const vector<Vec> control_points = theTPS->GetControlPoints();
+  const std::vector<TPS::Vec>& control_points = theTPS->GetControlPoints();
   for ( int i=0; i < (int)control_points.size(); ++i )
   {
     const Vec& cp = control_points[i];
@@ -318,10 +321,6 @@ static void mouse( int button, int state, int, int )
 // OGL: mouse movement callback
 static void mouseMotion( int x, int y )
 {
-  if ( mouseState[0] && mouseX != -999 )
-    if ( selected_cp >= 0 )
-       control_points[selected_cp].y += -(y - mouseY)/3;
-
   if ( mouseState[1] && mouseX != -999 )
   {
     camAlpha += -(y - mouseY);
@@ -401,6 +400,14 @@ int main( int argc, char *argv[] )
     return 1;
   }
   char* inputFile = argv[1];
+  std::ifstream in;
+  in.open(inputFile);
+  if (!in.good()) {
+    cerr << "Failed to open input file" << endl;
+    return 2;
+  }
+  theTPS = new ThinPlateSpline(in);
+  calc_tps();
 
   // Hack to preserve old behaviour wrt. glut
   argv[1] = argv[0];
@@ -455,5 +462,6 @@ int main( int argc, char *argv[] )
   create_menu() ;
   glutMainLoop();
 
+  delete theTPS;
   return 0;
 }
