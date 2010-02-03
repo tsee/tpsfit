@@ -20,11 +20,18 @@ TESTOBJECTS=$(TESTSOURCES:.cc=.o)
 EXECUTABLES=$(BINDIR)/tpsdemo $(BINDIR)/tpsfit $(BINDIR)/tpsview
 TESTEXECUTABLES=$(TESTDIR)/Vec $(TESTDIR)/streaming
 
+# default target
 all: bin $(EXECUTABLES)
 
+# create bin/ dir
 bin:
 	@mkdir -p bin
 
+# generic .o rule
+.cc.o:
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# executables
 $(BINDIR)/tpsview: $(OBJECTS) $(EXEOBJECTS)
 	$(CXX) $(LDFLAGS) $(SRCDIR)/tpsview.o $(OBJECTS) -o $@
 
@@ -34,15 +41,18 @@ $(BINDIR)/tpsdemo: $(OBJECTS) $(EXEOBJECTS)
 $(BINDIR)/tpsfit: $(OBJECTS) $(EXEOBJECTS)
 	$(CXX) $(LDFLAGS) $(SRCDIR)/tpsfit.o $(OBJECTS) -o $@
 
-.cc.o:
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-test: $(OBJECTS) $(TESTOBJECTS) $(TESTEXECUTABLES)
+test: all $(TESTOBJECTS) $(TESTEXECUTABLES)
 	perl -MTest::Harness -e 'runtests(qw($(TESTDIR)/Vec $(TESTDIR)/streaming))'
 
-$(TESTDIR)/steaming:
+# test executables
+$(TESTDIR)/streaming:
 	$(CXX) $(LDFLAGS) $(TESTDIR)/streaming.o $(OBJECTS) -o $@
 
+$(TESTDIR)/Vec:
+	$(CXX) $(LDFLAGS) $(TESTDIR)/Vec.o $(OBJECTS) -o $@
+
+
+# cleanup
 clean:
 	rm -f core *~ *.bak $(OBJECTS) $(EXEOBJECTS) $(TESTOBJECTS) $(EXECUTABLES) $(TESTEXECUTABLES)
 
