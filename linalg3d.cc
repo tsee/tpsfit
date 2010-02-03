@@ -21,6 +21,7 @@
 
 #include "linalg3d.h"
 #include <cmath>
+#include "TPSException.h"
 
 #define EPSILON 0.00001f
 #define Deg2Rad(Ang) ((float)( Ang * M_PI / 180.0 ))
@@ -59,8 +60,14 @@ TPS::operator<<(std::ostream& stream, Vec const& obj)
 std::istream&
 TPS::operator>>(std::istream& stream, Vec& obj)
 {
+  if (!stream.good())
+    throw EndOfFileException();
   stream >> obj.x;
+  if (!stream.good())
+    throw EndOfFileException();
   stream >> obj.y;
+  if (!stream.good())
+    throw EndOfFileException();
   stream >> obj.z;
   return stream;
 }
