@@ -12,7 +12,7 @@ using namespace std;
 using namespace TPS;
 
 
-const unsigned int nTests = 4;
+const unsigned int nTests = 30;
 int main (const int /*argc*/, const char** /*argv*/) {
   cout << "1.." << nTests << endl;
   unsigned int testNo = 0;
@@ -38,17 +38,34 @@ int main (const int /*argc*/, const char** /*argv*/) {
     ctrl.push_back(Vec(6., 8., 7.));
     ctrl.push_back(Vec(0., 2., 1.));
 
-    ThinPlateSpline tps(ctrl, 0.);
+    ThinPlateSpline tps(ctrl, 2.5);
     ostringstream str;
     str << tps;
     cerr << str.str();
     istringstream in(str.str());
+
     int n;
     double v;
+    in >> v;
+    assertStream(in, testNo);
+    ASSERT_EQUAL(v, 2.5, "regularization is 2.5");
+
     in >> n;
     assertStream(in, testNo);
-    ASSERT(n != 4, "no. control points okay");
-
+    ASSERT_EQUAL((unsigned int)n, ctrl.size(), "no. control points okay");
+    
+    for (unsigned int iVec = 0; iVec < ctrl.size(); ++iVec) {
+      in >> v;
+      assertStream(in, testNo);
+      ASSERT_EQUAL(v, ctrl[iVec].x, "component of ctrl point okay");
+      in >> v;
+      assertStream(in, testNo);
+      ASSERT_EQUAL(v, ctrl[iVec].y, "component of ctrl point okay");
+      in >> v;
+      assertStream(in, testNo);
+      ASSERT_EQUAL(v, ctrl[iVec].z, "component of ctrl point okay");
+    }
+    
   }
   
 }
